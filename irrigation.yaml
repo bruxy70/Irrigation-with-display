@@ -135,7 +135,7 @@ display:
       it.set_component_text_printf("rain_today","%.0f",id(rain_today).state);
       it.set_component_text_printf("rain_3_days","%.0f",id(rain_3_days).state);
       if (id(irrigation_on_last24h).state>0) {
-        it.set_component_text("irrigation_on_last24days","ano");
+        it.set_component_text("irrigation_on_last24days","yes");
       } else {
         it.set_component_text("irrigation_on_last24days","");
       }
