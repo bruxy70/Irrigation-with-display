@@ -1,0 +1,323 @@
+
+#This is the ESPHome script, it goes to the esphome folder
+substitutions:
+  rel1_gpio: GPIO12
+  rel2_gpio: GPIO5
+  rel3_gpio: GPIO4
+  rel4_gpio: GPIO15
+  key1_gpio: GPIO0
+  key2_gpio: GPIO9
+  key3_gpio: GPIO10
+  key4_gpio: GPIO14
+  led_gpio: GPIO13
+  rx_gpio: GPIO3
+  tx_gpio: GPIO1
+
+esphome:
+  name: irrigation
+  platform: ESP8266
+  board: esp01_1m
+
+
+uart:
+  rx_pin: $rx_gpio
+  tx_pin: $tx_gpio
+  baud_rate: 9600
+
+globals:
+ - id: time1
+   type: int
+   restore_value: no
+   initial_value: '1800'
+ - id: time2
+   type: int
+   restore_value: no
+   initial_value: '1800'
+ - id: time3
+   type: int
+   restore_value: no
+   initial_value: '1800'
+ - id: time4
+   type: int
+   restore_value: no
+   initial_value: '1800'
+ - id: remaining_time1
+   type: int
+   restore_value: no
+   initial_value: '1800'
+ - id: remaining_time2
+   type: int
+   restore_value: no
+   initial_value: '1800'
+ - id: remaining_time3
+   type: int
+   restore_value: no
+   initial_value: '1800'
+ - id: remaining_time4
+   type: int
+   restore_value: no
+   initial_value: '1800'
+
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+
+api:
+  password: !secret api_password
+  services:
+    - service: set_time_1
+      variables:
+        time: int
+      then:
+        globals.set:
+          id: time1
+          value: !lambda "return time;"
+    - service: set_time_2
+      variables:
+        time: int
+      then:
+        globals.set:
+          id: time2
+          value: !lambda "return time;"
+    - service: set_time_3
+      variables:
+        time: int
+      then:
+        globals.set:
+          id: time3
+          value: !lambda "return time;"
+    - service: set_time_4
+      variables:
+        time: int
+      then:
+        globals.set:
+          id: time4
+          value: !lambda "return time;"
+
+sensor:
+  - platform: homeassistant
+    id: rain_today
+    entity_id: sensor.rain_today
+  - platform: homeassistant
+    id: rain_3_days
+    entity_id: sensor.rain_3_days
+  - platform: homeassistant
+    id: irrigation_on_last24h
+    entity_id: variable.irrigation_on_last24h
+
+display:
+  - platform: nextion
+    id: irrigation
+    update_interval: 5s
+    lambda: |-
+      if (id(relay1).state) {
+        it.set_component_text_printf("time1","%2d:%02d",id(remaining_time1)/60,id(remaining_time1)%60);
+      } else {
+        it.set_component_text("time1","");
+      }
+      if (id(relay2).state) {
+        it.set_component_text_printf("time2","%2d:%02d",id(remaining_time2)/60,id(remaining_time2)%60);
+      } else {
+        it.set_component_text("time2","");
+      }
+      if (id(relay3).state) {
+        it.set_component_text_printf("time3","%2d:%02d",id(remaining_time3)/60,id(remaining_time3)%60);
+      } else {
+        it.set_component_text("time3","");
+      }
+      if (id(relay4).state) {
+        it.set_component_text_printf("time4","%2d:%02d",id(remaining_time4)/60,id(remaining_time4)%60);
+      } else {
+        it.set_component_text("time4","");
+      }
+      it.set_component_text_printf("rain_today","%.0f",id(rain_today).state);
+      it.set_component_text_printf("rain_3_days","%.0f",id(rain_3_days).state);
+      if (id(irrigation_on_last24h).state>0) {
+        it.set_component_text("irrigation_on_last24days","ano");
+      } else {
+        it.set_component_text("irrigation_on_last24days","");
+      }
+      
+        
+binary_sensor:
+  - platform: nextion
+    page_id: 0
+    component_id: 9
+    id: program1
+    on_press:
+      then:
+        - homeassistant.service:
+            service: script.irrigation_program1
+  - platform: nextion
+    page_id: 0
+    id: program2
+    component_id: 10
+    on_press:
+      then:
+        - homeassistant.service:
+            service: script.irrigation_program2
+  - platform: nextion
+    page_id: 0
+    id: program3
+    component_id: 11
+    on_press:
+      then:
+        - switch.turn_off: relay1
+        - switch.turn_off: relay2
+        - switch.turn_off: relay3
+        - switch.turn_off: relay4
+
+  - platform: gpio
+    id: key1
+    pin:
+      number: $key1_gpio
+      mode: INPUT_PULLUP
+      inverted: True
+    filters:
+      - delayed_on: 100ms
+      - delayed_off: 100ms
+    on_click:
+      min_length: 50ms
+      max_length: 350ms
+      then:
+        - globals.set:
+            id: time1
+            value: "900"
+        - switch.toggle: relay1
+  - platform: gpio
+    id: key2
+    pin:
+      number: $key2_gpio
+      mode: INPUT_PULLUP
+      inverted: True
+    filters:
+      - delayed_on: 100ms
+      - delayed_off: 100ms
+    on_click:
+      min_length: 50ms
+      max_length: 350ms
+      then:
+        - globals.set:
+            id: time2
+            value: "900"
+        - switch.toggle: relay2
+  - platform: gpio
+    id: key3
+    pin:
+      number: $key3_gpio
+      mode: INPUT_PULLUP
+      inverted: True
+    filters:
+      - delayed_on: 100ms
+      - delayed_off: 100ms
+    on_click:
+      min_length: 100ms
+      max_length: 500ms
+      then:
+        - globals.set:
+            id: time3
+            value: "900"
+        - switch.toggle: relay3
+  - platform: gpio
+    id: key4
+    pin:
+      number: $key4_gpio
+      mode: INPUT_PULLUP
+      inverted: True
+    filters:
+      - delayed_on: 100ms
+      - delayed_off: 100ms
+    on_click:
+      min_length: 100ms
+      max_length: 500ms
+      then:
+        - globals.set:
+            id: time4
+            value: "600"
+        - switch.toggle: relay4
+
+switch:
+  - platform: gpio
+    id: relay1
+    name: "irrigation_relay1"
+    pin: $rel1_gpio
+    on_turn_on:
+      then:
+      - globals.set:
+          id: remaining_time1
+          value: !lambda "return id(time1);"
+  - platform: gpio
+    id: relay2
+    name: "irrigation_relay2"
+    pin: $rel2_gpio
+    on_turn_on:
+      then:
+      - globals.set:
+          id: remaining_time2
+          value: !lambda "return id(time2);"
+  - platform: gpio
+    id: relay3
+    name: "irrigation_relay3"
+    pin: $rel3_gpio
+    on_turn_on:
+      - globals.set:
+          id: remaining_time3
+          value: !lambda "return id(time3);"
+  - platform: gpio
+    id: relay4
+    name: "irrigation_relay4"
+    pin: $rel4_gpio
+    on_turn_on:
+      - globals.set:
+          id: remaining_time4
+          value: !lambda "return id(time4);"
+
+interval:
+ - interval: 5s
+   then:
+     - lambda: |-
+         if(id(relay1).state) {
+           id(remaining_time1)=id(remaining_time1)-5;
+           if(id(remaining_time1)<=0){
+             id(relay1).turn_off();
+           }
+         }
+         if(id(relay2).state) {
+           id(remaining_time2)=id(remaining_time2)-5;
+           if(id(remaining_time2)<=0){
+             id(relay2).turn_off();
+           }
+         }
+         if(id(relay3).state) {
+           id(remaining_time3)=id(remaining_time3)-5;
+           if(id(remaining_time3)<=0){
+             id(relay3).turn_off();
+           }
+         }
+         if(id(relay4).state) {
+           id(remaining_time4)=id(remaining_time4)-5;
+           if(id(remaining_time4)<=0){
+             id(relay4).turn_off();
+           }
+         }
+
+ota:
+  password: !secret ota_password
+
+logger:
+  # Disable UART logging (pins GPIO1/3 are used for communication with the display)
+  baud_rate: 0
+  
+output:
+  - platform: esp8266_pwm
+    id: led_diode
+    pin: $led_gpio
+    inverted: True
+
+light:
+  - platform: monochromatic
+    internal: True
+    output: led_diode
+    id: led
