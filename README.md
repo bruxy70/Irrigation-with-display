@@ -13,25 +13,20 @@ The Nextion display is connected via 4 wires: GND, +5V, RX, and TX. So to contro
 
 ### Design
 
-The principle is very simple: I used Nextion Editor to create a layout for the display screen. There is a static image background with all graphics that do not change (including text, icons, frames, or color background). On top of the background, I created text or image objects for all the values that change. When the design is finished, you can upload the layout to the display from the NextionEditor using the serial connection (via USB FTDI board).
+The principle is very simple: I used Nextion Editor to create a layout for the display screen. There is a static image background with all graphics that do not change (including text, icons, frames, or color background). On top of the background, I created text objects for all the values that change. When the design is finished, you can upload the layout to the display from the NextionEditor using the serial connection (via USB FTDI board).
 
 The program  is then very simple - it just sets the text value for the individual text objects. For example, for the inside temperature it does this:
 ```
-it.set_component_text_printf("inside","%2.1f",id(temperature_inside).state);
+it.set_component_text_printf("time1","%2d:%02d",id(remaining_time1)/60,id(remaining_time1)%60);
 ```
 
-ESPHome can read Home Assistant sensors through API, so the ESPHome sensor "teplota_uvnitr" is linked to Home Assistant sensor sensor.teplota_uvnitr this way:
+ESPHome can read Home Assistant sensors through API, so the ESPHome sensor "rain_today" is linked to Home Assistant sensor sensor.rain_today this way:
 ```
 sensor:
-  - platform: homeassistant   # Inside temperature
-    id: teperature_inside
-    entity_id: sensor.temperature_inside
-```
-
-The weather forecast uses a picture - I have loaded set of icons through the NextionEditor, so all I do us to change the picture id this way:
-```
-it.send_command_printf("%s.pic=%.0f", "weather",id(today_icon).state);
-```
+  - platform: homeassistant
+    id: rain_today
+    entity_id: sensor.rain_today
+ ```
 
 It is using the [2.4 inch Nextion display](https://www.banggood.com/Nextion-NX3224T024-2_4-Inch-Man-machine-Interface-HMI-Screen-Kernel-In-English-p-1105052.html?utm_campaign=19381694_november&utm_content=2635&p=@K220219381694201802&cur_warehouse=CN).
 
