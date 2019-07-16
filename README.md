@@ -2,7 +2,7 @@
 Garden irrigation based on Sonoff 4ch, with built-in Nextion display
 
 ![Irrigation](/images/irrigation.jpg "Sonoff 4ch with Nextion display")
-s
+
 ## Getting Started
 
 ### Architecture
