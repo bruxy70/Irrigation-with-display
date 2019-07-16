@@ -7,9 +7,31 @@ Garden irrigation based on Sonoff 4ch, with built-in Nextion display
 
 ### Architecture
 
-Using Sonoff 4ch Pro to control four 24V AC valves (Gardena). The control of the solenoid valves is simple - open the valve by connecting 24V to it, it will close automatically when disconnected. I am using the original Gardena 24V AC adapter - one of its wires wire is connected to the (1-4) Sonoff 4ch Pro C (common) connectors. The NO (Normally Open) connectors (1-4) are then connected to the solenoids. The second AC adapter wire is then connected to the second contact of all 4 solenoids.  
+Using Sonoff 4ch Pro to control four 24V AC valves (Gardena). The control of the solenoid valves is simple - open the valve by connecting 24V to it, it will close automatically when disconnected. I am using the original Gardena 24V AC adapter - one of its wires wire is connected to the (1-4) Sonoff 4ch Pro C (common) connectors. The NO (Normally Open) connectors (1-4) are then connected to the solenoids. The second AC adapter wire is then connected to the second contact of all 4 solenoids.
 
-The Nextion display is connected via 4 wires: GND, +5V, RX, and TX. So to control the display is extremely easy - just connect these 4 wires to the corresponding ports in the Sonoff 4CH. GND, TX and RX is easy. But you need to find the 5V contact. This can be done in 2 ways - either power the whole Sonoff 4ch Pro by 5V (which is what I have done). Or power it by mains and find a 5V contact on the circuit board.
+The Sonoff relays (galvanically separated from the main device power supply) then control open valves by closing the relay. The valves can be closed by closing the relay. The ESPHome script has timers, that automatically closes the relays after preset time (even if the device closes connectivity to Wifi or Home Assistant, or if you open the relay by pushing the button manually. You can set the time preset for each valve using the ESPHome API.
+
+This is the example of the script to open the valve:
+```
+  - service: esphome.irrigation_set_time_1
+    data:
+      time: 900
+  - service: switch.turn_on
+    entity_id: switch.zavlazovani_rele_1
+
+```
+This will automatically shutdown the valve after 900 seconds (15 minutes). If you do not set the variable, it will use the default or previously set value.
+
+More advanced scenario is to set the valve based on google callendar. This is the example:
+```
+  - service: esphome.irrigation_set_time_1
+    data_template:
+      time: "{{  (as_timestamp(state_attr('calendar.irrigation1','end_time')) - as_timestamp(now())) | int }}"
+  - service: switch.turn_on
+    entity_id: switch.irrigation_rele_1
+```
+
+The Nextion display shows the remaining time. It also has 3 buttons to start automation scrips from teh touch screen. The display is connected via 4 wires: GND, +5V, RX, and TX. So to control the display is extremely easy - just connect these 4 wires to the corresponding ports in the Sonoff 4CH. GND, TX and RX is easy. But you need to find the 5V contact. This can be done in 2 ways - either power the whole Sonoff 4ch Pro by 5V (which is what I have done). Or power it by mains and find a 5V contact on the circuit board.
 
 ### Design
 
