@@ -104,8 +104,8 @@ sensor:
     id: rain_3_days
     entity_id: sensor.rain_3_days
   - platform: homeassistant
-    id: irrigation_on_last24h
-    entity_id: variable.irrigation_on_last24h
+    id: irrigation_24h
+    entity_id: variable.irrigation_24h
 
 display:
   - platform: nextion
@@ -134,10 +134,10 @@ display:
       }
       it.set_component_text_printf("rain_today","%.0f",id(rain_today).state);
       it.set_component_text_printf("rain_3_days","%.0f",id(rain_3_days).state);
-      if (id(irrigation_on_last24h).state>0) {
-        it.set_component_text("irrigation_on_last24days","yes");
+      if (id(irrigation_24h).state>0) {
+        it.set_component_text("irrigation_24h","yes");
       } else {
-        it.set_component_text("irrigation_on_last24days","");
+        it.set_component_text("irrigation_24h","");
       }
       
         
