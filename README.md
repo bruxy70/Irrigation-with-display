@@ -30,13 +30,6 @@ sensor:
 
 It is using the [2.4 inch Nextion display](https://www.banggood.com/Nextion-NX3224T024-2_4-Inch-Man-machine-Interface-HMI-Screen-Kernel-In-English-p-1105052.html?utm_campaign=19381694_november&utm_content=2635&p=@K220219381694201802&cur_warehouse=CN).
 
-### Additional features
-
-There are two more "nice to have" features:
-1. The display has 2 pages. I made it so it does change the page on each refresh (every 5 seconds). This is optional, you can make it either to show one page only. Or to flip the page on touching the screen (this can be easily done directly from the NextionEditor, without any programming).
-2. On my Home Assistant, I also have a sensor showing whether somebody is home. When the alarm is on, nobody is home - so I am turning off the display light. And I only update the information when the display is on. This is entirely optional.
-3. I also display the internet time, using ESPHome's time service.
-
 ### Source files
 
 - **display_weather.yaml** - this is the main file - the actual ESPHome configuration
