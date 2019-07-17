@@ -17,7 +17,7 @@ This is the example of the script to change the preset and open the valve:
     data:
       time: 900
   - service: switch.turn_on
-    entity_id: switch.zavlazovani_rele_1
+    entity_id: switch.irrigation_rele_1
 
 ```
 This will automatically shutdown the valve after 900 seconds (15 minutes). If you do not set the preset, it will use the default or previously set value.
