@@ -9,9 +9,9 @@ Garden irrigation based on Sonoff 4ch, with built-in Nextion display
 
 Using Sonoff 4ch Pro to control four 24V AC valves (Gardena). The control of the solenoid valves is simple - open the valve by connecting 24V to it, it will close automatically when disconnected. I am using the original Gardena 24V AC adapter - one of its wires wire is connected to the (1-4) Sonoff 4ch Pro C (common) connectors. The NO (Normally Open) connectors (1-4) are then connected to the solenoids. The second AC adapter wire is then connected to the second contact of all 4 solenoids.
 
-The Sonoff relays (galvanically separated from the main device power supply) then control open valves by closing the relay. The valves can be closed by closing the relay. The ESPHome script has timers, that automatically closes the relays after preset time (even if the device closes connectivity to Wifi or Home Assistant, or if you open the relay by pushing the button manually. You can set the time preset for each valve using the ESPHome API.
+The Sonoff relays (galvanically separated from the main device power supply) then control open valves by closing the relay. The valves can be closed by closing the relay. The 4 buttons on Sonoff 4ch are configured in the ESPHome script to toggle the relay. The ESPHome script also has timers, that automatically close the relays after preset time (even if the device closes connectivity to Wifi or Home Assistant, or if you open the relay by pushing the button manually. You can change the time preset for each valve using the ESPHome API.
 
-This is the example of the script to open the valve:
+This is the example of the script to change the preset and open the valve:
 ```
   - service: esphome.irrigation_set_time_1
     data:
@@ -20,10 +20,17 @@ This is the example of the script to open the valve:
     entity_id: switch.zavlazovani_rele_1
 
 ```
-This will automatically shutdown the valve after 900 seconds (15 minutes). If you do not set the variable, it will use the default or previously set value.
+This will automatically shutdown the valve after 900 seconds (15 minutes). If you do not set the preset, it will use the default or previously set value.
 
-More advanced scenario is to set the valve based on google callendar. This is the example:
+More advanced scenario is to set the valve based on [Google callendar event](https://www.home-assistant.io/components/calendar.google/). This is the example:
 ```
+  trigger: 
+      platform: state
+      entity_id: calendar.irrigation1
+      to: 'on'
+  condition:
+      # checking the condition, e.g. rain sensors or pevious events
+  action:
   - service: esphome.irrigation_set_time_1
     data_template:
       time: "{{  (as_timestamp(state_attr('calendar.irrigation1','end_time')) - as_timestamp(now())) | int }}"
