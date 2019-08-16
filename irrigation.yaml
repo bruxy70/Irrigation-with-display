@@ -112,6 +112,9 @@ display:
     id: irrigation
     update_interval: 5s
     lambda: |-
+      // Do not wait for ACK - it slows down the process, and has no use
+      it.set_wait_for_ack(false);
+
       if (id(relay1).state) {
         it.set_component_text_printf("time1","%2d:%02d",id(remaining_time1)/60,id(remaining_time1)%60);
       } else {
