@@ -1,4 +1,3 @@
-
 #This is the ESPHome script, it goes to the esphome folder
 substitutions:
   rel1_gpio: GPIO12
@@ -161,16 +160,6 @@ binary_sensor:
       then:
         - homeassistant.service:
             service: script.irrigation_program2
-  - platform: nextion
-    page_id: 0
-    id: program3
-    component_id: 11
-    on_press:
-      then:
-        - switch.turn_off: relay1
-        - switch.turn_off: relay2
-        - switch.turn_off: relay3
-        - switch.turn_off: relay4
 
   - platform: gpio
     id: key1
@@ -180,10 +169,7 @@ binary_sensor:
       inverted: True
     filters:
       - delayed_on: 100ms
-      - delayed_off: 100ms
-    on_click:
-      min_length: 50ms
-      max_length: 350ms
+    on_press:
       then:
         - globals.set:
             id: time1
@@ -197,10 +183,7 @@ binary_sensor:
       inverted: True
     filters:
       - delayed_on: 100ms
-      - delayed_off: 100ms
-    on_click:
-      min_length: 50ms
-      max_length: 350ms
+    on_press:
       then:
         - globals.set:
             id: time2
@@ -214,10 +197,7 @@ binary_sensor:
       inverted: True
     filters:
       - delayed_on: 100ms
-      - delayed_off: 100ms
-    on_click:
-      min_length: 100ms
-      max_length: 500ms
+    on_press:
       then:
         - globals.set:
             id: time3
@@ -231,10 +211,7 @@ binary_sensor:
       inverted: True
     filters:
       - delayed_on: 100ms
-      - delayed_off: 100ms
-    on_click:
-      min_length: 100ms
-      max_length: 500ms
+    on_press:
       then:
         - globals.set:
             id: time4
