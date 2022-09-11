@@ -46,20 +46,3 @@ It is using the [2.4 inch Nextion display](https://www.banggood.com/Nextion-NX32
 ## Author
 
 - **Václav Chaloupka** - _Initial work_ - [bruxy70](https://github.com/bruxy70)
-
-```mermaid
-flowchart TD
-    A[Start full cycle] -->B[Open valve 0]
-    B --> C[Turn on valve button on Nextion display]
-    C --> D[Start single valve program for valve 0]
-    D --> E[Full cycle canceled!!!]
-
-    F[Zone 0 finished] --> G[Close valve 0]
-    G --> H[Reset valve button on Nextion display]
-    H --> I[Shutdown controller]
-    I --> J[Other zones will not happen]
-```
-
-```
-
-```
