@@ -54,7 +54,7 @@ sensor:
 
 display:
   - platform: nextion
-    id: irrigation
+    id: nextion_display
     update_interval: 5s
     lambda: |-
       if (id(relay1).state) {
