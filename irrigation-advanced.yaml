@@ -66,7 +66,7 @@ display:
         it.set_component_text("sprinkler.time1",remaining_time(controller).c_str());
       }
       if (id(relay2).state) {
-        it.set_component_text("sprinkler.time2,remaining_time(controller).c_str());
+        it.set_component_text("sprinkler.time2",remaining_time(controller).c_str());
       }
       if (id(relay3).state) {
         it.set_component_text("sprinkler.time3",remaining_time(controller).c_str());
