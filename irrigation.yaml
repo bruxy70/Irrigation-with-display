@@ -58,25 +58,25 @@ display:
     update_interval: 5s
     lambda: |-
       if (id(relay1).state) {
-        auto remaining_time = id(controller).time_remaining().value_or(0);
+        auto remaining_time = id(controller).time_remaining_active_valve().value_or(0);
         if (remaining_time != 0) {
           it.set_component_text_printf("sprinkler.time1","%02d:%02d",remaining_time/60,remaining_time%60);
         }
       }
       if (id(relay2).state) {
-        auto remaining_time = id(controller).time_remaining().value_or(0);
+        auto remaining_time = id(controller).time_remaining_active_valve().value_or(0);
         if (remaining_time != 0) {
           it.set_component_text_printf("sprinkler.time2","%02d:%02d",remaining_time/60,remaining_time%60);
         }
       }
       if (id(relay3).state) {
-        auto remaining_time = id(controller).time_remaining().value_or(0);
+        auto remaining_time = id(controller).time_remaining_active_valve().value_or(0);
         if (remaining_time != 0) {
           it.set_component_text_printf("sprinkler.time3","%02d:%02d",remaining_time/60,remaining_time%60);
         }
       }
       if (id(relay4).state) {
-        auto remaining_time = id(controller).time_remaining().value_or(0);
+        auto remaining_time = id(controller).time_remaining_active_valve().value_or(0);
         if (remaining_time != 0) {
           it.set_component_text_printf("sprinkler.time4","%02d:%02d",remaining_time/60,remaining_time%60);
         }
